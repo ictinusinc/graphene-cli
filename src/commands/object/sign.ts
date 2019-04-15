@@ -10,8 +10,7 @@ import {Option} from "../../options";
 import {get_module} from "../module/helper";
 
 interface signOptions extends Option{
-    slot: number;
-    pin?:string;
+    slot?: number;
     data:string;
 }
 
@@ -23,19 +22,12 @@ export class SignCommand extends Command{
         super(parent);
         // --slot
         this.options.push(new SlotOption());
-        // --pin
-        this.options.push(new PinOption());
         // --data
         this.options.push(new DataOption());
     }
     protected async onRun(params:signOptions):Promise<Command> {
-        const mod = get_module();
         let alg: graphene.MechanismType;
         alg = graphene.MechanismEnum.ECDSA;
-        if (!params.slot) {
-            console.log("No slot found. Defaulting to 0.");
-            params.slot = 0;
-        }
         const session = get_session();
 
         let key: graphene.Key | null = null;
@@ -53,17 +45,15 @@ export class SignCommand extends Command{
         if (!key) {
             throw new Error("Cannot find signing key");
         }
-        var sign = session.createSign(alg,key);//"ECDSA_SHA256", key);
+        var sign = session.createSign(alg,key);
         if (!params.data) {
             console.log("No data found. Signing 'test' string");
             params.data = 'test';
         }
         sign.update(params.data.toString());
         var signature = sign.final();
-        var priv = key.get('value')
-        var privKey = key.getAttribute({modulus:null,publicExponent:null});
-        //privKey.modulus = privKey.modulus.toString('base64')
-        console.log('Private key:',priv,privKey)
+
+        console.log("Derived key handle:", key.handle.toString('hex'));
         console.log("Signature ECDSA_SHA256:", signature.toString('hex'));
         return this;
     }

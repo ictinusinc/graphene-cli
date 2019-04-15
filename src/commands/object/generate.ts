@@ -21,7 +21,7 @@ export class GenerateCommand extends Command{
 
     protected async onRun(params:GenerateOptions):Promise<Command>{
         const session = get_session();
-        var keys = gen_ECDSA_secp256k1(session)
+        var keys = gen_ECDSA_secp256k1(session,params.token)
         if(keys){
             console.log('Key generation successful!')
         }else{
