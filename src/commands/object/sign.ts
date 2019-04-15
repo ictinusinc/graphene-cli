@@ -7,9 +7,10 @@ import {SlotOption} from "../../options/slot";
 import {PinOption} from "../../options/pin";
 import {DataOption} from "./options/data";
 import {Option} from "../../options";
+import {get_module} from "../module/helper";
 
 interface signOptions extends Option{
-    lib: string;
+    //lib: string;
     slot?: number;
     pin?:string;
     data?:string;
@@ -30,8 +31,11 @@ export class SignCommand extends Command{
 
     }
     protected async onRun(params:signOptions):Promise<Command>{
-        const mod = graphene.Module.load(params.lib);
+        //const mod = graphene.Module.load(params.lib);
+        //mod.initialize();
+        const mod = get_module();
         mod.initialize();
+
 
         if(!params.slot){
             console.log("No slot found. Defaulting to 0.");
@@ -45,7 +49,8 @@ export class SignCommand extends Command{
         if (params.pin) {
             session.login(params.pin);
         }else{
-            console.log("Session did not log in. May not work.");
+            console.log("Session did not log in. Will not work.");
+            return this;
         }
 
         let key: graphene.Key | null = null;
