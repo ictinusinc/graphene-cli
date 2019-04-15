@@ -31,10 +31,13 @@ export class SignCommand extends Command{
 
     }
     protected async onRun(params:signOptions):Promise<Command>{
-        //const mod = graphene.Module.load(params.lib);
-        //mod.initialize();
-        const mod = get_module();
+        if(!params.lib){
+            params.lib = "/home/vagrant/gemalto/libs/64/libCryptoki2.so";
+        }
+        const mod = graphene.Module.load(params.lib, 'GemaltoHSM');
         mod.initialize();
+        //const mod = get_module();
+        //mod.initialize();
 
 
         if(!params.slot){
@@ -42,7 +45,7 @@ export class SignCommand extends Command{
             params.slot = 0;
         }
 
-        const slot = mod.getSlots(params.slot, true);
+        const slot = mod.getSlots(params.slot);
         const session = slot.open(graphene.SessionFlag.SERIAL_SESSION);
 
 
@@ -73,7 +76,7 @@ export class SignCommand extends Command{
             console.log("No data found. Signing empty string");
             params.data = '';
         }
-        sign.update(params.data);
+        sign.update(params.data.toString());
         var signature = sign.final();
         console.log("Signature ECDSA_SHA256:",signature.toString('hex'));
 
