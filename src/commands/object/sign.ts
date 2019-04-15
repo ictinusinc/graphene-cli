@@ -8,6 +8,7 @@ import {PinOption} from "../../options/pin";
 import {DataOption} from "./options/data";
 import {Option} from "../../options";
 import {get_module} from "../module/helper";
+import {open_session} from "../test/helper";
 
 interface signOptions extends Option{
     lib: string;
@@ -53,8 +54,10 @@ export class SignCommand extends Command{
             params.slot = 0;
         }
 
-        const slot = mod.getSlots(params.slot);
-        const session = slot.open(graphene.SessionFlag.SERIAL_SESSION);
+        //const slot = mod.getSlots(params.slot);
+        //const session = slot.open(graphene.SessionFlag.SERIAL_SESSION);
+        const session = get_session();
+        console.log(session)
 
         let key: graphene.Key | null = null;
         //#region Find signing key
