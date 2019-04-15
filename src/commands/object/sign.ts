@@ -11,9 +11,9 @@ import {get_module} from "../module/helper";
 
 interface signOptions extends Option{
     lib: string;
-    slot?: number;
+    slot: number;
     pin?:string;
-    data?:string;
+    data:string;
 }
 
 export class SignCommand extends Command{
@@ -30,57 +30,57 @@ export class SignCommand extends Command{
         this.options.push(new DataOption());
 
     }
-    protected async onRun(params:signOptions):Promise<Command>{
-        if(!params.lib){
-            params.lib = "/home/vagrant/gemalto/libs/64/libCryptoki2.so";
-        }
-        const mod = graphene.Module.load(params.lib, 'GemaltoHSM');
-        //mod.initialize();
-        //const mod = get_module();
-        //mod.initialize();
+    protected async onRun(params:signOptions):Promise<Command> {
 
-
-        if(!params.slot){
-            console.log("No slot found. Defaulting to 0.");
-            params.slot = 0;
-        }
-
-        const slot = mod.getSlots(params.slot);
-        const session = slot.open(graphene.SessionFlag.SERIAL_SESSION);
-
-
-        if (params.pin) {
-            session.login(params.pin);
-        }else{
-            console.log("Session did not log in. Will not work.");
-            return this;
-        }
-
-        let key: graphene.Key | null = null;
-        //#region Find signing key
-        const objects = session.find({ label: GEN_KEY_LABEL });
-        for (let i = 0; i < objects.length; i++) {
-            const obj = objects.items(i);
-            if (obj.class === graphene.ObjectClass.PRIVATE_KEY ||
-                obj.class === graphene.ObjectClass.SECRET_KEY
-            ) {
-                key = obj.toType<graphene.Key>();
-                break;
+        const mod = get_module();
+        mod.initialize();
+        try {
+            if (!params.lib) {
+                params.lib = "/home/vagrant/gemalto/libs/64/libCryptoki2.so";
             }
-        }
-        if (!key) {
-            throw new Error("Cannot find signing key");
-        }
-        var sign = session.createSign("ECDSA_SHA256",key);
-        if(!params.data){
-            console.log("No data found. Signing empty string");
-            params.data = '';
-        }
-        sign.update(params.data.toString());
-        var signature = sign.final();
-        console.log("Signature ECDSA_SHA256:",signature.toString('hex'));
+            //const mod = graphene.Module.load(params.lib, 'GemaltoHSM');
 
-        return this;
+            //mod.initialize();
+
+
+
+            if (!params.slot) {
+                console.log("No slot found. Defaulting to 0.");
+                params.slot = 0;
+            }
+
+            const slot = mod.getSlots(params.slot);
+            const session = slot.open(graphene.SessionFlag.SERIAL_SESSION);
+
+            let key: graphene.Key | null = null;
+            //#region Find signing key
+            const objects = session.find({label: GEN_KEY_LABEL});
+            for (let i = 0; i < objects.length; i++) {
+                const obj = objects.items(i);
+                if (obj.class === graphene.ObjectClass.PRIVATE_KEY ||
+                    obj.class === graphene.ObjectClass.SECRET_KEY
+                ) {
+                    key = obj.toType<graphene.Key>();
+                    break;
+                }
+            }
+            if (!key) {
+                throw new Error("Cannot find signing key");
+            }
+            var sign = session.createSign("ECDSA_SHA256", key);
+            if (!params.data) {
+                console.log("No data found. Signing empty string");
+                params.data = '';
+            }
+            sign.update(params.data.toString());
+            var signature = sign.final();
+            console.log("Signature ECDSA_SHA256:", signature.toString('hex'));
+            session.close();
+            return this;
+        }catch(error){
+            mod.finalize();
+            throw (error);
+        }
     }
 
 
