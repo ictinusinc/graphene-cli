@@ -4,18 +4,19 @@ import { Command } from "../../command";
 import {get_session} from "../slot/helper";
 import {GEN_KEY_LABEL, TEST_KEY_ID} from "../../const";
 
-interface generateOptions{
+/*interface generateOptions{
     slot: graphene.Slot;
     alg: string;
-}
+}*/
 
 export class GenerateCommand extends Command{
     public name = "generate";
     public description = "Generates an SECP256k1 Key";
 
 
-    protected async onRun(params:generateOptions):Promise<Command>{
+    protected async onRun():Promise<Command>{
         const session = get_session();
+
         var keys = gen_ECDSA_secp256k1(session)
         if(keys){
             console.log('Key generation successful!')
