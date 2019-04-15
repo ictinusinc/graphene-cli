@@ -35,7 +35,7 @@ export class SignCommand extends Command{
             params.lib = "/home/vagrant/gemalto/libs/64/libCryptoki2.so";
         }
         const mod = graphene.Module.load(params.lib, 'GemaltoHSM');
-        mod.initialize();
+        //mod.initialize();
         //const mod = get_module();
         //mod.initialize();
 
