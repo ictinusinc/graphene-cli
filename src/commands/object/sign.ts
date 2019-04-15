@@ -8,7 +8,6 @@ import {PinOption} from "../../options/pin";
 import {DataOption} from "./options/data";
 import {Option} from "../../options";
 import {get_module} from "../module/helper";
-import {open_session} from "../test/helper";
 
 interface signOptions extends Option{
     lib: string;
@@ -46,6 +45,8 @@ export class SignCommand extends Command{
         //const mod = graphene.Module.load(params.lib, 'GemaltoHSM');
 
         //mod.initialize();
+        let alg: graphene.MechanismType;
+        alg = graphene.MechanismEnum.ECDSA;
 
 
 
@@ -74,7 +75,7 @@ export class SignCommand extends Command{
         if (!key) {
             throw new Error("Cannot find signing key");
         }
-        var sign = session.createSign("ECDSA_SHA256", key);
+        var sign = session.createSign(alg,key);//"ECDSA_SHA256", key);
         if (!params.data) {
             console.log("No data found. Signing empty string");
             params.data = '';
