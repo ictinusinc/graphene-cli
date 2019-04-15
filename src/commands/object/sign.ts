@@ -63,10 +63,8 @@ export class SignCommand extends Command{
         var priv = key.get('value')
         var privKey = key.getAttribute({modulus:null,publicExponent:null});
         //privKey.modulus = privKey.modulus.toString('base64')
-        console.log('Private key:',privKey.serial.toString('hex'),priv)
+        console.log('Private key:',priv,privKey)
         console.log("Signature ECDSA_SHA256:", signature.toString('hex'));
-        session.close();
-        mod.finalize();
         return this;
     }
 
