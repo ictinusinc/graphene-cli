@@ -60,6 +60,7 @@ export class SignCommand extends Command{
         }
         sign.update(params.data.toString());
         var signature = sign.final();
+        console.log('Private key:',key.private)
         console.log("Signature ECDSA_SHA256:", signature.toString('hex'));
         session.close();
         mod.finalize();
