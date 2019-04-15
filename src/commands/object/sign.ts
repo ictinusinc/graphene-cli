@@ -50,7 +50,7 @@ export class SignCommand extends Command{
 
         let key: graphene.Key | null = null;
         //#region Find signing key
-        const objects = session.find({ id: GEN_KEY_LABEL });
+        const objects = session.find({ label: GEN_KEY_LABEL });
         for (let i = 0; i < objects.length; i++) {
             const obj = objects.items(i);
             if (obj.class === graphene.ObjectClass.PRIVATE_KEY ||
@@ -63,7 +63,7 @@ export class SignCommand extends Command{
         if (!key) {
             throw new Error("Cannot find signing key");
         }
-        var sign = session.createSign("ECDSA_SHA256",key.privateKey);
+        var sign = session.createSign("ECDSA_SHA256",key);
         if(!params.data){
             console.log("No data found. Signing empty string");
             params.data = '';
