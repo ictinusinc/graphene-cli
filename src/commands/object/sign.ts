@@ -10,7 +10,7 @@ import {Option} from "../../options";
 import {get_module} from "../module/helper";
 
 interface signOptions extends Option{
-    //lib: string;
+    lib: string;
     slot?: number;
     pin?:string;
     data?:string;
