@@ -10,7 +10,6 @@ import {Option} from "../../options";
 import {get_module} from "../module/helper";
 
 interface signOptions extends Option{
-    lib: string;
     slot: number;
     pin?:string;
     data:string;
@@ -28,37 +27,16 @@ export class SignCommand extends Command{
         this.options.push(new PinOption());
         // --data
         this.options.push(new DataOption());
-
     }
     protected async onRun(params:signOptions):Promise<Command> {
-
         const mod = get_module();
-        //try{
-        //    mod.initialize();
-        //}catch(error){
-            //mod.finalize();
-        //    console.log('Module already initialized.');
-        //}
-        if (!params.lib) {
-            params.lib = "/home/vagrant/gemalto/libs/64/libCryptoki2.so";
-        }
-        //const mod = graphene.Module.load(params.lib, 'GemaltoHSM');
-
-        //mod.initialize();
         let alg: graphene.MechanismType;
         alg = graphene.MechanismEnum.ECDSA;
-
-
-
         if (!params.slot) {
             console.log("No slot found. Defaulting to 0.");
             params.slot = 0;
         }
-
-        //const slot = mod.getSlots(params.slot);
-        //const session = slot.open(graphene.SessionFlag.SERIAL_SESSION);
         const session = get_session();
-        console.log(session)
 
         let key: graphene.Key | null = null;
         //#region Find signing key
@@ -84,6 +62,7 @@ export class SignCommand extends Command{
         var signature = sign.final();
         console.log("Signature ECDSA_SHA256:", signature.toString('hex'));
         session.close();
+        mod.finalize();
         return this;
     }
 

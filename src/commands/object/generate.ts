@@ -4,10 +4,6 @@ import { Command } from "../../command";
 import {get_session} from "../slot/helper";
 import {GEN_KEY_LABEL, TEST_KEY_ID} from "../../const";
 
-/*interface generateOptions{
-    slot: graphene.Slot;
-    alg: string;
-}*/
 
 export class GenerateCommand extends Command{
     public name = "generate";
