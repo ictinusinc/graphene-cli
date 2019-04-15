@@ -6,8 +6,9 @@ import {GEN_KEY_LABEL} from "../../const";
 import {SlotOption} from "../../options/slot";
 import {PinOption} from "../../options/pin";
 import {DataOption} from "./options/data";
+import {Option} from "../../options";
 
-interface signOptions{
+interface signOptions extends Option{
     lib: string;
     slot?: number;
     pin?:string;
