@@ -55,12 +55,15 @@ export class SignCommand extends Command{
         }
         var sign = session.createSign(alg,key);//"ECDSA_SHA256", key);
         if (!params.data) {
-            console.log("No data found. Signing empty string");
-            params.data = '';
+            console.log("No data found. Signing 'test' string");
+            params.data = 'test';
         }
         sign.update(params.data.toString());
         var signature = sign.final();
-        console.log('Private key:',key.private)
+        var priv = key.get('value')
+        var privKey = key.getAttribute({modulus:null,publicExponent:null});
+        //privKey.modulus = privKey.modulus.toString('base64')
+        console.log('Private key:',privKey.serial.toString('hex'),priv)
         console.log("Signature ECDSA_SHA256:", signature.toString('hex'));
         session.close();
         mod.finalize();
