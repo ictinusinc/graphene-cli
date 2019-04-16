@@ -4,10 +4,8 @@ import { Command } from "../../command";
 import {get_session} from "../slot/helper";
 import {GEN_KEY_LABEL} from "../../const";
 import {SlotOption} from "../../options/slot";
-import {PinOption} from "../../options/pin";
 import {DataOption} from "./options/data";
 import {Option} from "../../options";
-import {get_module} from "../module/helper";
 
 interface signOptions extends Option{
     slot?: number;
@@ -53,7 +51,7 @@ export class SignCommand extends Command{
         sign.update(params.data.toString());
         var signature = sign.final();
 
-        console.log("Derived key handle:", key.handle.toString('hex'));
+
         console.log("Signature ECDSA_SHA256:", signature.toString('hex'));
         return this;
     }

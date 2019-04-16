@@ -1,10 +1,10 @@
 import * as graphene from "graphene-pk11";
-
 import { Command } from "../../command";
 import {get_session} from "../slot/helper";
 import {GEN_KEY_LABEL, TEST_KEY_ID} from "../../const";
 import {TokenOption} from "../test/options/token";
 import {Option} from "../../options";
+import Mechanism = GraphenePkcs11.Mechanism;
 
 interface GenerateOptions extends Option{
     token: boolean;
@@ -22,6 +22,11 @@ export class GenerateCommand extends Command{
     protected async onRun(params:GenerateOptions):Promise<Command>{
         const session = get_session();
         var keys = gen_ECDSA_secp256k1(session,params.token)
+
+
+
+        console.log(keys.privateKey.size);
+        console.log(keys.publicKey.size);
         if(keys){
             console.log('Key generation successful!')
         }else{
@@ -40,9 +45,11 @@ function gen_ECDSA(session: graphene.Session, name: string, hexOid: string, toke
             label: GEN_KEY_LABEL,
             token,
             verify: true,
-            paramsEC: new Buffer(hexOid, "hex"),
+            //paramsEC: new Buffer(hexOid, "hex"),
+            paramsECDSA: graphene.NamedCurve.getByName('secp256r1').value,
         },
         {
+            keyType: graphene.KeyType.ECDSA,
             id: TEST_KEY_ID,
             label: GEN_KEY_LABEL,
             token,
