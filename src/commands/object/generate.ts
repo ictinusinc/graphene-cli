@@ -4,7 +4,6 @@ import {get_session} from "../slot/helper";
 import {GEN_KEY_LABEL, TEST_KEY_ID} from "../../const";
 import {TokenOption} from "../test/options/token";
 import {Option} from "../../options";
-import Mechanism = GraphenePkcs11.Mechanism;
 
 interface GenerateOptions extends Option{
     token: boolean;
@@ -25,8 +24,11 @@ export class GenerateCommand extends Command{
 
 
 
-        console.log(keys.privateKey.size);
-        console.log(keys.publicKey.size);
+        //console.log(keys.privateKey.getAttribute('pointEC'));
+        console.log(keys.publicKey.getAttribute('pointEC').toString('hex').slice(6));
+
+
+
         if(keys){
             console.log('Key generation successful!')
         }else{
@@ -36,7 +38,7 @@ export class GenerateCommand extends Command{
     }
 }
 
-function gen_ECDSA(session: graphene.Session, name: string, hexOid: string, token = false) {
+function gen_ECDSA(session: graphene.Session, name: string, token = false) {
     return session.generateKeyPair(
         graphene.KeyGenMechanism.ECDSA,
         {
@@ -45,8 +47,7 @@ function gen_ECDSA(session: graphene.Session, name: string, hexOid: string, toke
             label: GEN_KEY_LABEL,
             token,
             verify: true,
-            //paramsEC: new Buffer(hexOid, "hex"),
-            paramsECDSA: graphene.NamedCurve.getByName('secp256r1').value,
+            paramsEC: graphene.NamedCurve.getByName('secp256r1').value,
         },
         {
             keyType: graphene.KeyType.ECDSA,
@@ -59,5 +60,5 @@ function gen_ECDSA(session: graphene.Session, name: string, hexOid: string, toke
     );
 }
 function gen_ECDSA_secp256k1(session: graphene.Session, token = false) {
-    return gen_ECDSA(session, "ECDSA-secp256k1", "06052B8104000A", token);
+    return gen_ECDSA(session, "ECDSA-secp256k1", token);
 }
