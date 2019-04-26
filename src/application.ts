@@ -36,6 +36,7 @@ export class Application extends Command {
             var command;
                 var args2 = await c.readline.prompt();
                 if(args2.length>6 && args2[0]=='module'){
+
                     var bigArgs = [];
                     bigArgs[0] = [args2[0],args2[1],args2[2],args2[3],args2[4],args2[5]]; //module load -l /home/vagrant/gemalto/libs/64/libCryptoki2.so -n GemaltoHSM
                     if(args2[6]=='slot'){
@@ -43,14 +44,13 @@ export class Application extends Command {
                     }if(args2[13]=='object' && args2[14]=='generate'){
                         bigArgs[2] = [args2[13], args2[14], args2[15], args2[16]];  //object generate -token true
                     }else if(args2[13]=='object' && args2[14]=='sign'){
-                        bigArgs[2] = [args2[13], args2[14], args2[15], args2[16], args2[17], args2[18]];  //object sign -s 0 -d data
+                        bigArgs[2] = [args2[13], args2[14], args2[15], args2[16], args2[17], args2[18],args2[19],args2[20]];  //object sign -s 0 -h handle -d data
                     }
                 }
             try {
                 if(bigArgs){
                     var i;
                     for(i=0;i<bigArgs.length;i++){
-                        console.log('count',bigArgs[i])
                         command = await super.run(bigArgs[i]);
                     }
                     dontRun = true;

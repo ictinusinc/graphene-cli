@@ -31,7 +31,8 @@ export class LoadCommand extends Command {
         data.module.initialize();
 
         const mod = get_module();
-        print_module_info(mod);
+        //print_module_info(mod);   //Turned off to grab data easier
+
 
         return this;
     }
