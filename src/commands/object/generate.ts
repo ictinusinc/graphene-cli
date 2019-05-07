@@ -1,7 +1,7 @@
 import * as graphene from "graphene-pk11";
 import {Command} from "../../command";
 import {get_session} from "../slot/helper";
-import {GEN_KEY_LABEL, TEST_KEY_ID} from "../../const";
+import {GEN_PRIV_KEY_LABEL, GEN_PUB_KEY_LABEL, TEST_KEY_ID} from "../../const";
 import {TokenOption} from "../test/options/token";
 import {Option} from "../../options";
 
@@ -29,7 +29,6 @@ export class GenerateCommand extends Command{
         keys.privateKey.setAttribute('id',keys.privateKey.handle)
         keys.publicKey.setAttribute('id',keys.publicKey.handle)
 
-
         if(keys){
             console.log(keys.publicKey.getAttribute('pointEC').toString('hex').slice(6)+keys.privateKey.handle.toString('hex'));
         }else{
@@ -43,18 +42,20 @@ function gen_ECDSA(session: graphene.Session, name: string, token = false) {
     return session.generateKeyPair(graphene.KeyGenMechanism.ECDSA, {
             keyType: graphene.KeyType.ECDSA,
             id: TEST_KEY_ID,
-            label: GEN_KEY_LABEL,
-            token,
+            label: GEN_PUB_KEY_LABEL,
+            token:token,
             verify: true,
             paramsEC: Buffer.from("06052B8104000A", "hex"),
+            //verifyRecover: true,
         },
         {
             keyType: graphene.KeyType.ECDSA,
             id: TEST_KEY_ID,
-            label: GEN_KEY_LABEL,
-            token,
+            label: GEN_PRIV_KEY_LABEL,
+            token: token,
             private: true,
             sign: true,
+            //signRecover: true,
         },
     );
 }
