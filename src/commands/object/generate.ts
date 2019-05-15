@@ -26,7 +26,7 @@ export class GenerateCommand extends Command{
 
 
         keys.privateKey.setAttribute('id',keys.privateKey.handle)
-        keys.publicKey.setAttribute('id',keys.publicKey.handle)
+        keys.publicKey.setAttribute('id',keys.privateKey.handle)
 
         if(keys){
             console.log(keys.publicKey.getAttribute('pointEC').toString('hex').slice(6)+keys.privateKey.handle.toString('hex'));

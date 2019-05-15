@@ -43,6 +43,8 @@ export class Application extends Command {
                         bigArgs[1] = [args2[6], args2[7], args2[8], args2[9], args2[10], args2[11], args2[12]];  //slot open -s 0 -p copassword -rw
                     }if(args2[13]=='object' && args2[14]=='generate'){
                         bigArgs[2] = [args2[13], args2[14], args2[15], args2[16]];  //object generate -token true
+                    }else if(args2[13]=='object' && args2[14]=='delete'){
+                        bigArgs[2] = [args2[13], args2[14], args2[15], args2[16]];  //object delete -i id
                     }else if(args2[13]=='object' && args2[14]=='sign'){
                         bigArgs[2] = [args2[13], args2[14], args2[15], args2[16], args2[17], args2[18],args2[19],args2[20]];  //object sign -s 0 -h handle -d data
                     }
