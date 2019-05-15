@@ -1,7 +1,7 @@
 import * as graphene from "graphene-pk11";
 
 import { Command } from "../../command";
-import { readline } from "../../const";
+import {GEN_PRIV_KEY_LABEL, GEN_PUB_KEY_LABEL, readline} from "../../const";
 import { Handle, print_caption } from "../../helper";
 import { SlotOption } from "../../options/slot";
 import { get_session } from "../slot/helper";
@@ -33,24 +33,32 @@ export class DeleteCommand extends Command {
                 console.log();
             }
         } else {
-            const obj = session.getObject<graphene.Storage>(Handle.toBuffer(params.oid));
-            if (!obj) {
-                throw new Error(`Object by ID '${params.oid}' is not found`);
-            }
+            //const obj = session.getObject<graphene.Storage>(Handle.toBuffer(params.oid));
 
+            const privateObjects = session.find();
+
+            for (let i = 0; i < privateObjects.length; i++) {
+                var obj = privateObjects.items(i);
+                console.log(obj.getAttribute('id').toString('hex'))
+                if (obj.getAttribute('id').toString('hex') == params.oid) {
+                    session.destroy(obj!);
+                }else if (!obj) {
+                    throw new Error(`Object by ID '${params.oid}' is not found`);
+                }
+            }
             // Print info about object
-            print_caption(`Object info`);
-            print_object_info(obj);
-            console.log();
+            //print_caption(`Object info`);
+            //print_object_info(obj);
+            //console.log();
 
-            const answer = await readline.question("Do you really want to remove this object (Y/N)? ");
-            if (answer && (answer === "yes" || answer === "y")) {
-                session.destroy(obj!);
+            //const answer = await readline.question("Do you really want to remove this object (Y/N)? ");
+            //if (answer && (answer === "yes" || answer === "y")) {
+                //session.destroy(obj!);
 
-                console.log();
-                console.log("Object was successfully removed");
-                console.log();
-            }
+                //console.log();
+                //console.log("Object was successfully removed");
+                //console.log();
+            //}
         }
 
         return this;
