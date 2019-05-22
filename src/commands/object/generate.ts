@@ -4,7 +4,6 @@ import {get_session} from "../slot/helper";
 import {GEN_PRIV_KEY_LABEL, GEN_PUB_KEY_LABEL, TEST_KEY_ID} from "../../const";
 import {TokenOption} from "../test/options/token";
 import {Option} from "../../options";
-import Key = GraphenePkcs11.Key;
 
 interface GenerateOptions extends Option{
     token: boolean;
@@ -23,10 +22,8 @@ export class GenerateCommand extends Command{
         const session = get_session();
         var keys = gen_ECDSA_secp256k1(session,params.token)
 
-
-
-        keys.privateKey.setAttribute('id',keys.privateKey.handle)
-        keys.publicKey.setAttribute('id',keys.privateKey.handle)
+        keys.privateKey.setAttribute({id:Buffer.from(keys.privateKey.handle)})
+        keys.publicKey.setAttribute({id:Buffer.from(keys.privateKey.handle)})
 
         if(keys){
             console.log(keys.publicKey.getAttribute('pointEC').toString('hex').slice(6)+keys.privateKey.handle.toString('hex'));
