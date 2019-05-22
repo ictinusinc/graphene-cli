@@ -1,12 +1,9 @@
 import * as graphene from "graphene-pk11";
 
 import { Command } from "../../command";
-import {GEN_PRIV_KEY_LABEL, GEN_PUB_KEY_LABEL, readline} from "../../const";
-import { Handle, print_caption } from "../../helper";
-import { SlotOption } from "../../options/slot";
+import {readline} from "../../const";
 import { get_session } from "../slot/helper";
 import { ObjectIdOption } from "./options/obj_id";
-import { print_object_info } from "./helper";
 
 interface DeleteOptions {
     oid?: string;
@@ -33,19 +30,11 @@ export class DeleteCommand extends Command {
                 console.log();
             }
         } else {
-            //const obj = session.getObject<graphene.Storage>(Handle.toBuffer(params.oid));
 
-            const privateObjects = session.find();
-
-            for (let i = 0; i < privateObjects.length; i++) {
-                var obj = privateObjects.items(i);
-                console.log(obj.getAttribute('id').toString('hex'))
-                if (obj.getAttribute('id').toString('hex') == params.oid) {
-                    session.destroy(obj!);
-                }else if (!obj) {
-                    throw new Error(`Object by ID '${params.oid}' is not found`);
-                }
-            }
+            const objects = session.find({id:Buffer.from(params.oid,'hex')});
+            session.destroy(objects.items(0)!);
+            session.destroy(objects.items(1)!);
+            console.log('Done.');
             // Print info about object
             //print_caption(`Object info`);
             //print_object_info(obj);
@@ -60,7 +49,6 @@ export class DeleteCommand extends Command {
                 //console.log();
             //}
         }
-
         return this;
     }
 
