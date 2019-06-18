@@ -10,3 +10,4 @@ export const TEST_KEY_ID = new Buffer([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
 export const TEST_KEY_LABEL = "graphene-test-key";
 export const GEN_PRIV_KEY_LABEL = "secp256k1-privkey";
 export const GEN_PUB_KEY_LABEL = "secp256k1-pubkey";
+export const COMMAND_POINTER = ['slot','object','module','exit']
