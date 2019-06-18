@@ -5,7 +5,6 @@ import { HashCommand } from "./commands/hash/index";
 import { ModuleCommand } from "./commands/module";
 import { ObjectCommand } from "./commands/object/index";
 import { SlotCommand } from "./commands/slot";
-import {CloseCommand} from "./commands/close";
 
 import * as c from "./const";
 import {COMMAND_POINTER} from "./const";
@@ -26,7 +25,6 @@ export class Dynamic extends Command {
 
     public async run(args: string[]): Promise<Command> {
             var args2 = args.slice(2);
-
             var bigArgs = [];
             var indexes = [];
             try {
@@ -45,21 +43,17 @@ export class Dynamic extends Command {
                     }
                 }
                 for(let i=0;i<bigArgs.length;i++){
-                    console.log('bigargs runnin',bigArgs[i],bigArgs.length)
                     await super.run(bigArgs[i]);
                 }
                 c.readline.close();
             } catch (e) {
-                console.error(`\n${Color.FgRed}Error${Color.Reset}`, e.message);
                 c.readline.close()
-                //const command = this.getCommand(args2);
-                //command.showHelp();
+                console.error(`\n${Color.FgRed}Error${Color.Reset}`, e.message);
             }
         return this;
     }
 
     protected async onRun(args: string[]): Promise<Command> {
-        //this.showHelp();
         return this;
     }
 
