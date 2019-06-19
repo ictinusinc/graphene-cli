@@ -5,6 +5,9 @@ import { HashCommand } from "./commands/hash/index";
 import { ModuleCommand } from "./commands/module";
 import { ObjectCommand } from "./commands/object/index";
 import { SlotCommand } from "./commands/slot";
+import { VersionCommand } from "./commands/version";
+import { TestCommand } from "./commands/test/index";
+import { CloseCommand } from "./commands/close";
 
 import * as c from "./const";
 import {COMMAND_POINTER} from "./const";
@@ -17,6 +20,9 @@ export class Dynamic extends Command {
     constructor() {
         super();
 
+        this.commands.push(new TestCommand(this));
+        this.commands.push(new CloseCommand(this));
+        this.commands.push(new VersionCommand(this));
         this.commands.push(new ModuleCommand(this));
         this.commands.push(new SlotCommand(this));
         this.commands.push(new ObjectCommand(this));
