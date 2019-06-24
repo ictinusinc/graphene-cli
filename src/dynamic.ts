@@ -1,12 +1,12 @@
 import * as Color from "./color";
 import { Command } from "./command";
 
-import { HashCommand } from "./commands/hash/index";
+import { HashCommand } from "./commands/hash";
 import { ModuleCommand } from "./commands/module";
-import { ObjectCommand } from "./commands/object/index";
+import { ObjectCommand } from "./commands/object";
 import { SlotCommand } from "./commands/slot";
 import { VersionCommand } from "./commands/version";
-import { TestCommand } from "./commands/test/index";
+import { TestCommand } from "./commands/test";
 import { CloseCommand } from "./commands/close";
 
 import * as c from "./const";
@@ -53,7 +53,7 @@ export class Dynamic extends Command {
                 }
                 c.readline.close();
             } catch (e) {
-                c.readline.close()
+                c.readline.close();
                 console.error(`\n${Color.FgRed}Error${Color.Reset}`, e.message);
             }
         return this;

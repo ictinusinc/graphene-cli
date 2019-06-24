@@ -2,15 +2,14 @@ import * as graphene from "graphene-pk11";
 
 import { Command } from "../../command";
 
-import {get_session} from "../slot/helper";
 import {SlotOption} from "../../options/slot";
 import {DataOption} from "./options/data";
 import {Option} from "../../options";
 import {HandleOption} from "./options/handle";
+import {get_session} from "../slot/helper";
 
 
 interface signOptions extends Option{
-    lib: string;
     slot?: number;
     handle:string;
     data:string;
@@ -31,18 +30,25 @@ export class SignCommand extends Command{
 
     }
     protected async onRun(params:signOptions):Promise<Command>{
-        const mod = graphene.Module.load(params.lib);
-        mod.initialize();
+        let alg: graphene.MechanismType;
+        alg = graphene.MechanismEnum.ECDSA;
+
 
         if(!params.slot){
             console.log("No slot found. Defaulting to 0.");
             params.slot = 0;
         }
 
-        const slot = mod.getSlots(params.slot, true);
-        const session = slot.open(graphene.SessionFlag.SERIAL_SESSION);
+        if (!params.data) {
+            console.log("No data found. Signing 'test' string");
+            params.data = 'test';
+        }
+        const session = get_session();
 
-        
+
+        const hash = session.createDigest("sha256").once(Buffer.from(params.data,'hex'))
+
+
 
         //#region Find signing key
 
@@ -52,15 +58,10 @@ export class SignCommand extends Command{
             throw new Error("Cannot find signing key");
         }
 
-        if (!params.data) {
-            console.log("No data found. Signing 'test' string");
-            params.data = 'test';
-        }
 
-        var sign = session.createSign(alg,privObj);
-        sign.update(Buffer.from(params.data,'hex'))
-        var signature = sign.final();
-        console.log(signature.toString('hex'));
+        var sign = session.createSign(alg,privObj).once(hash);
+        console.log(sign.toString('hex'));
+
         return this;
     }
 
