@@ -34,20 +34,7 @@ export class DeleteCommand extends Command {
             const objects = session.find({id:Buffer.from(params.oid,'hex')});
             session.destroy(objects.items(0)!);
             session.destroy(objects.items(1)!);
-            console.log('Done.');
-            // Print info about object
-            //print_caption(`Object info`);
-            //print_object_info(obj);
-            //console.log();
-
-            //const answer = await readline.question("Do you really want to remove this object (Y/N)? ");
-            //if (answer && (answer === "yes" || answer === "y")) {
-                //session.destroy(obj!);
-
-                //console.log();
-                //console.log("Object was successfully removed");
-                //console.log();
-            //}
+            console.log('Object deleted.');
         }
         return this;
     }

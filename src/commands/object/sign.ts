@@ -7,65 +7,61 @@ import {DataOption} from "./options/data";
 import {Option} from "../../options";
 import {HandleOption} from "./options/handle";
 import {get_session} from "../slot/helper";
+import {MechOption} from "./options/mech";
 
 
 interface signOptions extends Option{
-    slot?: number;
+    slot: number;
     handle:string;
     data:string;
+    mech:string;
 }
 
 export class SignCommand extends Command{
     public name = "sign";
-    public description = "Signs with an SECP256k1 Key";
+    public description = [
+        "Signs with a key",
+        "",
+        "Supported mechanisms:",
+        "  rsa",
+        "  ecdsa",
+        "  aes",
+    ];
 
     constructor(parent?: Command) {
         super(parent);
-        // --slot
+
         this.options.push(new SlotOption());
-        // --handle
         this.options.push(new HandleOption());
-        // --data
         this.options.push(new DataOption());
+        this.options.push(new MechOption());
 
     }
     protected async onRun(params:signOptions):Promise<Command>{
+        const session = get_session();
         let alg: graphene.MechanismType;
-        alg = graphene.MechanismEnum.ECDSA;
-
-
-        if(!params.slot){
-            console.log("No slot found. Defaulting to 0.");
-            params.slot = 0;
+        if(!params.mech){
+            console.log("No mechanism found. Defaulting to ECDSA.");
+            alg = graphene.MechanismEnum.ECDSA;
+        }else{
+            alg = params.mech;
         }
 
         if (!params.data) {
             console.log("No data found. Signing 'test' string");
             params.data = 'test';
         }
-        const session = get_session();
-
-
-        const hash = session.createDigest("sha256").once(Buffer.from(params.data,'hex'))
-
-
-
-        //#region Find signing key
-
-        const privObj = session.getObject(Buffer.from(params.handle,'hex')).toType<graphene.Key>();
-
-        if (!privObj) {
+        if(params.data.length!=64 && alg == graphene.MechanismEnum.ECDSA){
+            params.data = session.createDigest("sha256").once(Buffer.from(params.data,'hex')).toString('hex');
+        }
+        if (!session.getObject(Buffer.from(params.handle,'hex'))) {
             throw new Error("Cannot find signing key");
         }
+        const privObj = session.getObject(Buffer.from(params.handle,'hex')).toType<graphene.Key>();
 
-
-        var sign = session.createSign(alg,privObj).once(hash);
-        console.log(sign.toString('hex'));
+        var signature = session.createSign(alg,privObj).once(Buffer.from(params.data,'hex'));
+        console.log(signature.toString('hex'));
 
         return this;
     }
-
-
-
-
 }
