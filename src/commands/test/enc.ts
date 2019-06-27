@@ -14,6 +14,7 @@ import { SlotOption } from "../../options/slot";
 import { AlgorithmOption } from "./options/alg";
 import { IterationOption } from "./options/iteration";
 import { ThreadOption } from "./options/thread";
+import {TEST_KEY_LABEL} from "../../const";
 
 async function test_enc(params: TestOptions, prefix: string, postfix: string, mech: graphene.MechanismEnum) {
     try {
@@ -24,7 +25,8 @@ async function test_enc(params: TestOptions, prefix: string, postfix: string, me
             const session = open_session(params);
             let keys: graphene.IKeyPair;
             try {
-                keys = gen[prefix][postfix](session, true) as graphene.IKeyPair;
+                let name = `${TEST_KEY_LABEL}-${testAlg}`;
+                keys = gen[prefix][postfix](session, name, true) as graphene.IKeyPair;
             } catch (err) {
                 session.close();
                 throw err;

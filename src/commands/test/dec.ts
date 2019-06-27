@@ -4,7 +4,7 @@ import * as path from "path";
 
 import * as Color from "../../color";
 import { Command } from "../../command";
-import { TEST_KEY_ID } from "../../const";
+import {TEST_KEY_ID, TEST_KEY_LABEL} from "../../const";
 import { lpad, rpad } from "../../helper";
 import { IDecThreadTestArgs, IDecThreadTestResult } from "./dec_thread_test";
 import { prepare_data } from "./enc_helper";
@@ -14,10 +14,8 @@ import { check_enc_algs, delete_test_keys, open_session, TestOptions } from "./h
 import { PinOption } from "../../options/pin";
 import { SlotOption } from "../../options/slot";
 import { AlgorithmOption } from "./options/alg";
-import { BufferOption } from "./options/buffer";
 import { IterationOption } from "./options/iteration";
 import { ThreadOption } from "./options/thread";
-import { TokenOption } from "./options/token";
 
 async function test_dec(params: TestOptions, prefix: string, postfix: string, mech: graphene.MechanismEnum) {
     try {
@@ -28,7 +26,8 @@ async function test_dec(params: TestOptions, prefix: string, postfix: string, me
             const session = open_session(params);
             let keys: graphene.IKeyPair | graphene.SecretKey;
             try {
-                keys = gen[prefix][postfix](session, true);
+                let name = `${TEST_KEY_LABEL}-${testAlg}`;
+                keys = gen[prefix][postfix](session, name, true);
             } catch (err) {
                 session.close();
                 throw err;

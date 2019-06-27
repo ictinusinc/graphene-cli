@@ -7,14 +7,14 @@ import {DataOption} from "./options/data";
 import {Option} from "../../options";
 import {HandleOption} from "./options/handle";
 import {get_session} from "../slot/helper";
-import {MechOption} from "./options/mech";
+import {AlgorithmOption} from "./options/alg";
 
 
 interface signOptions extends Option{
     slot: number;
     handle:string;
     data:string;
-    mech:string;
+    alg:string;
 }
 
 export class SignCommand extends Command{
@@ -22,10 +22,9 @@ export class SignCommand extends Command{
     public description = [
         "Signs with a key",
         "",
-        "Supported mechanisms:",
-        "  rsa",
+        "Supported algorithms:",
+        "  rsa-1024, rsa-2049, rsa-4096",
         "  ecdsa",
-        "  aes",
     ];
 
     constructor(parent?: Command) {
@@ -34,7 +33,7 @@ export class SignCommand extends Command{
         this.options.push(new SlotOption());
         this.options.push(new HandleOption());
         this.options.push(new DataOption());
-        this.options.push(new MechOption());
+        this.options.push(new AlgorithmOption());
 
     }
     protected async onRun(params:signOptions):Promise<Command>{
@@ -42,26 +41,11 @@ export class SignCommand extends Command{
 
         let alg: graphene.MechanismType;
 
-        let foundIndex = 0;
-        for(let i=268;i<Object.keys(graphene.MechanismEnum).length;i++){
-            if(Object.keys(graphene.MechanismEnum)[i].toString()==params.mech.toUpperCase()){
-                foundIndex = i;
-            }
-        }
-        if(foundIndex==0){
+        if(graphene.MechanismEnum[params.alg.toUpperCase() as any] !== undefined){
+            alg = graphene.MechanismEnum[params.alg.toUpperCase() as any];
+        }else{
             throw new Error("No mechanism found")
         }
-        alg = Object.keys(graphene.MechanismEnum)[foundIndex]
-
-        if (!params.data) {
-            console.log("No data found. Signing 'test' string");
-            params.data = 'test';
-        }
-
-        // @ts-ignore
-        if(params.data.length!=64 && (alg == graphene.MechanismEnum.ECDSA||alg=='ECDSA')){                                             //
-            params.data = session.createDigest("sha256").once(Buffer.from(params.data,'hex')).toString('hex'); //Potentially remove
-        }                                                                                                                             //
         if (!session.getObject(Buffer.from(params.handle,'hex'))) {
             throw new Error("Cannot find signing key");
         }
