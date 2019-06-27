@@ -1,6 +1,6 @@
 import * as graphene from "graphene-pk11";
 
-import { gen } from "./gen_helper";
+import { gen } from "../../gen_helper";
 
 export interface IGenThreadTestArgs {
     lib: string;
@@ -39,7 +39,7 @@ if (process.send) {
                 //#region Test
                 const sTime = Date.now();
                 for (let i = 0; i < args.it; i++) {
-                    const key = gen[args.prefix][args.postfix](session, args.token);
+                    const key = gen[args.prefix][args.postfix](session, args.token, true);
                     //#region Destroy keys
                     // if (key instanceof graphene.SecretKey) {
                         // key.destroy();

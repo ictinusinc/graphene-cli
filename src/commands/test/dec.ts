@@ -8,7 +8,7 @@ import { TEST_KEY_ID } from "../../const";
 import { lpad, rpad } from "../../helper";
 import { IDecThreadTestArgs, IDecThreadTestResult } from "./dec_thread_test";
 import { prepare_data } from "./enc_helper";
-import { gen } from "./gen_helper";
+import { gen } from "../../gen_helper";
 import { check_enc_algs, delete_test_keys, open_session, TestOptions } from "./helper";
 
 import { PinOption } from "../../options/pin";

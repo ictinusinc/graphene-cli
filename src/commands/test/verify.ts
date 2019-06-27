@@ -4,9 +4,8 @@ import * as path from "path";
 
 import * as Color from "../../color";
 import { Command } from "../../command";
-import { TEST_KEY_ID } from "../../const";
 import { lpad, rpad } from "../../helper";
-import { gen } from "./gen_helper";
+import { gen } from "../../gen_helper";
 import { check_sign_algs, delete_test_keys, open_session, TestOptions } from "./helper";
 import { prepare_data } from "./sign_helper";
 import { IVerifyThreadTestArgs, IVerifyThreadTestResult } from "./verify_thread_test";
@@ -14,10 +13,8 @@ import { IVerifyThreadTestArgs, IVerifyThreadTestResult } from "./verify_thread_
 import { PinOption } from "../../options/pin";
 import { SlotOption } from "../../options/slot";
 import { AlgorithmOption } from "./options/alg";
-import { BufferOption } from "./options/buffer";
 import { IterationOption } from "./options/iteration";
 import { ThreadOption } from "./options/thread";
-import { TokenOption } from "./options/token";
 
 async function test_verify(params: TestOptions, prefix: string, postfix: string, signAlg: string, digestAlg?: string) {
     try {

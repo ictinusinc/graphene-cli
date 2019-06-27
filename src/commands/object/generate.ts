@@ -3,7 +3,7 @@ import {Command} from "../../command";
 import {get_session} from "../slot/helper";
 import {TokenOption} from "../test/options/token";
 import {Option} from "../../options";
-import {gen} from "./gen_helper";
+import {gen} from "../../gen_helper";
 import {AlgorithmOption} from "./options/alg";
 
 
