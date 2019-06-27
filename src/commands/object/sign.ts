@@ -39,21 +39,29 @@ export class SignCommand extends Command{
     }
     protected async onRun(params:signOptions):Promise<Command>{
         const session = get_session();
+
         let alg: graphene.MechanismType;
-        if(!params.mech){
-            console.log("No mechanism found. Defaulting to ECDSA.");
-            alg = graphene.MechanismEnum.ECDSA;
-        }else{
-            alg = params.mech;
+
+        let foundIndex = 0;
+        for(let i=268;i<Object.keys(graphene.MechanismEnum).length;i++){
+            if(Object.keys(graphene.MechanismEnum)[i].toString()==params.mech.toUpperCase()){
+                foundIndex = i;
+            }
         }
+        if(foundIndex==0){
+            throw new Error("No mechanism found")
+        }
+        alg = Object.keys(graphene.MechanismEnum)[foundIndex]
 
         if (!params.data) {
             console.log("No data found. Signing 'test' string");
             params.data = 'test';
         }
-        if(params.data.length!=64 && alg == graphene.MechanismEnum.ECDSA){
-            params.data = session.createDigest("sha256").once(Buffer.from(params.data,'hex')).toString('hex');
-        }
+
+        // @ts-ignore
+        if(params.data.length!=64 && (alg == graphene.MechanismEnum.ECDSA||alg=='ECDSA')){                                             //
+            params.data = session.createDigest("sha256").once(Buffer.from(params.data,'hex')).toString('hex'); //Potentially remove
+        }                                                                                                                             //
         if (!session.getObject(Buffer.from(params.handle,'hex'))) {
             throw new Error("Cannot find signing key");
         }

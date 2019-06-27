@@ -31,7 +31,6 @@ export class GenerateCommand extends Command{
         this.options.push(new TokenOption());
         //--alg or -a
         this.options.push(new AlgorithmOption())
-
     }
 
     protected async onRun(params:GenerateOptions):Promise<Command>{

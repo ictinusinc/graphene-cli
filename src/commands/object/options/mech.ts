@@ -4,4 +4,5 @@ export class MechOption extends Option {
     public name = "mech";
     public alias = "m";
     public description = "Mechanism to sign with.";
+    public isRequired = true;
 }
