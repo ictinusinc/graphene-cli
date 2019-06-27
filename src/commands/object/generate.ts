@@ -55,11 +55,12 @@ function generate(params:GenerateOptions, session: graphene.Session){
         }
         var key = gen[alg][curve](session,params.token);
         if (!(key instanceof graphene.SecretKey)) {
-            if(params.alg=='ecdsa-secp256k1'){ //For our own API's useage
-                key.privateKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
-                key.publicKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
-                console.log(key.publicKey.getAttribute('pointEC').toString('hex').slice(6)+key.privateKey.handle.toString('hex'));
-            }
+            key.privateKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
+            key.publicKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
+            console.log(key.publicKey.getAttribute('pointEC').toString('hex').slice(6)+key.privateKey.handle.toString('hex'));
+        }else if (key instanceof graphene.SecretKey){
+            key.setAttribute({id: Buffer.from(key.handle)});
+            console.log(key.handle.toString('hex'))
         }
     }
 }

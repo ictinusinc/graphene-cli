@@ -30,26 +30,26 @@ export class Dynamic extends Command {
     }
 
     public async run(args: string[]): Promise<Command> {
-            var args2 = args.slice(2);
-            var bigArgs = [];
+            var parsedArgs = args.slice(2);
+            var commandArrays = [];
             var indexes = [];
             try {
-                for(let i=0;i<args2.length;i++){
+                for(let i=0;i<parsedArgs.length;i++){
                     for(var cmd in COMMAND_POINTER){
-                        if(args2[i] === COMMAND_POINTER[cmd]){
+                        if(parsedArgs[i] === COMMAND_POINTER[cmd]){
                             indexes.push(i)
                         }
                     }
                 }
                 for(let i=0;i<indexes.length;i++){
                     if(indexes.length-1==i){
-                        bigArgs[i] = args2.slice(indexes[i])
+                        commandArrays[i] = parsedArgs.slice(indexes[i])
                     }else{
-                        bigArgs[i] = args2.slice(indexes[i],indexes[i+1])
+                        commandArrays[i] = parsedArgs.slice(indexes[i],indexes[i+1])
                     }
                 }
-                for(let i=0;i<bigArgs.length;i++){
-                    await super.run(bigArgs[i]);
+                for(let i=0;i<commandArrays.length;i++){
+                    await super.run(commandArrays[i]);
                 }
                 c.readline.close();
             } catch (e) {

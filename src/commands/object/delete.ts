@@ -54,7 +54,6 @@ export class DeleteCommand extends Command {
                     console.log('Object(s) deleted.');
                 }
             }
-
         }
         return this;
     }
