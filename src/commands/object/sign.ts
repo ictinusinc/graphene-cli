@@ -7,14 +7,14 @@ import {DataOption} from "./options/data";
 import {Option} from "../../options";
 import {HandleOption} from "./options/handle";
 import {get_session} from "../slot/helper";
-import {MechOption} from "./options/mech";
+import {AlgorithmOption} from "./options/alg";
 
 
 interface signOptions extends Option{
     slot: number;
     handle:string;
     data:string;
-    mech:string;
+    alg:string;
 }
 
 export class SignCommand extends Command{
@@ -22,10 +22,9 @@ export class SignCommand extends Command{
     public description = [
         "Signs with a key",
         "",
-        "Supported mechanisms:",
-        "  rsa",
+        "Supported algorithms:",
+        "  rsa-1024, rsa-2049, rsa-4096",
         "  ecdsa",
-        "  aes",
     ];
 
     constructor(parent?: Command) {
@@ -34,25 +33,18 @@ export class SignCommand extends Command{
         this.options.push(new SlotOption());
         this.options.push(new HandleOption());
         this.options.push(new DataOption());
-        this.options.push(new MechOption());
+        this.options.push(new AlgorithmOption());
 
     }
     protected async onRun(params:signOptions):Promise<Command>{
         const session = get_session();
-        let alg: graphene.MechanismType;
-        if(!params.mech){
-            console.log("No mechanism found. Defaulting to ECDSA.");
-            alg = graphene.MechanismEnum.ECDSA;
-        }else{
-            alg = params.mech;
-        }
 
-        if (!params.data) {
-            console.log("No data found. Signing 'test' string");
-            params.data = 'test';
-        }
-        if(params.data.length!=64 && alg == graphene.MechanismEnum.ECDSA){
-            params.data = session.createDigest("sha256").once(Buffer.from(params.data,'hex')).toString('hex');
+        let alg: graphene.MechanismType;
+
+        if(graphene.MechanismEnum[params.alg.toUpperCase() as any] !== undefined){
+            alg = graphene.MechanismEnum[params.alg.toUpperCase() as any];
+        }else{
+            throw new Error("No mechanism found")
         }
         if (!session.getObject(Buffer.from(params.handle,'hex'))) {
             throw new Error("Cannot find signing key");

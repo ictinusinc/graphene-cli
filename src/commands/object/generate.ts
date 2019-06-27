@@ -3,7 +3,7 @@ import {Command} from "../../command";
 import {get_session} from "../slot/helper";
 import {TokenOption} from "../test/options/token";
 import {Option} from "../../options";
-import {gen} from "./gen_helper";
+import {gen} from "../../gen_helper";
 import {AlgorithmOption} from "./options/alg";
 
 
@@ -31,7 +31,6 @@ export class GenerateCommand extends Command{
         this.options.push(new TokenOption());
         //--alg or -a
         this.options.push(new AlgorithmOption())
-
     }
 
     protected async onRun(params:GenerateOptions):Promise<Command>{
@@ -54,13 +53,20 @@ function generate(params:GenerateOptions, session: graphene.Session){
             console.log('Invalid algorithm');
             return;
         }
-        var key = gen[alg][curve](session,params.token);
+        var key = gen[alg][curve](session, alg.toUpperCase()+'-'+curve, params.token);
+
         if (!(key instanceof graphene.SecretKey)) {
-            if(params.alg=='ecdsa-secp256k1'){ //For our own API's useage
-                key.privateKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
-                key.publicKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
-                console.log(key.publicKey.getAttribute('pointEC').toString('hex').slice(6)+key.privateKey.handle.toString('hex'));
-            }
+            key.privateKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
+            key.publicKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
+            let pubKey = key.publicKey.getAttribute('pointEC').toString('hex').slice(6);
+            let objHandle = key.privateKey.handle.toString('hex');
+            console.log('Outputting signature and handle: \n');
+            console.log(pubKey+objHandle);
+        }else if (key instanceof graphene.SecretKey){
+            key.setAttribute({id: Buffer.from(key.handle)});
+            let objHandle = key.handle.toString('hex');
+            console.log('Outputting handle: \n');
+            console.log(objHandle)
         }
     }
 }
