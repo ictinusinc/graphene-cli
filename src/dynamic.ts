@@ -10,7 +10,6 @@ import { TestCommand } from "./commands/test";
 import { CloseCommand } from "./commands/close";
 
 import * as c from "./const";
-import {COMMAND_POINTER} from "./const";
 
 export class Dynamic extends Command {
 
@@ -32,20 +31,20 @@ export class Dynamic extends Command {
     public async run(args: string[]): Promise<Command> {
             var parsedArgs = args.slice(2);
             var commandArrays = [];
-            var indexes = [];
+            var commandIndex = [];
             try {
                 for(let i=0;i<parsedArgs.length;i++){
-                    for(var cmd in COMMAND_POINTER){
-                        if(parsedArgs[i] === COMMAND_POINTER[cmd]){
-                            indexes.push(i)
+                    for(var cmd in this.commands){
+                        if(parsedArgs[i] === this.commands[cmd].name){
+                            commandIndex.push(i)
                         }
                     }
                 }
-                for(let i=0;i<indexes.length;i++){
-                    if(indexes.length-1==i){
-                        commandArrays[i] = parsedArgs.slice(indexes[i])
+                for(let i=0;i<commandIndex.length;i++){
+                    if(commandIndex.length-1==i){
+                        commandArrays[i] = parsedArgs.slice(commandIndex[i])
                     }else{
-                        commandArrays[i] = parsedArgs.slice(indexes[i],indexes[i+1])
+                        commandArrays[i] = parsedArgs.slice(commandIndex[i],commandIndex[i+1])
                     }
                 }
                 for(let i=0;i<commandArrays.length;i++){
