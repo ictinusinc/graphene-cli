@@ -24,15 +24,19 @@ export class DeleteCommand extends Command {
 
     protected async onRun(params: DeleteOptions,): Promise<Command> {
         const session = get_session();
-        if (params.oid === undefined) {
-            const answer = (await readline.question("Do you really want to remove ALL objects (Y/N)? ")).toLowerCase();
-            if (answer && (answer === "yes" || answer === "y")) {
+        if(params.oid === undefined) {
+            if(this.parent!.parent instanceof Dynamic){
                 session.destroy();
-                console.log();
-                console.log("All Objects were successfully removed");
-                console.log();
+            }else{
+                const answer = (await readline.question("Do you really want to remove ALL objects (Y/N)? ")).toLowerCase();
+                if (answer && (answer === "yes" || answer === "y")) {
+                    session.destroy();
+                    console.log();
+                    console.log("All Objects were successfully removed");
+                    console.log();
+                }
             }
-        } else {
+        }else {
             const objects = session.find({id:Buffer.from(params.oid,'hex')});
             if (!objects) {
                 throw new Error(`Object by ID '${params.oid}' is not found`);

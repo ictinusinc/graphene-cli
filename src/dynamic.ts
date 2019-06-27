@@ -29,12 +29,12 @@ export class Dynamic extends Command {
     }
 
     public async run(args: string[]): Promise<Command> {
-            var parsedArgs = args.slice(2);
-            var commandArrays = [];
-            var commandIndex = [];
             try {
+                let parsedArgs = args.slice(2);
+                let commandArrays = [];
+                let commandIndex = [];
                 for(let i=0;i<parsedArgs.length;i++){
-                    for(var cmd in this.commands){
+                    for(let cmd in this.commands){
                         if(parsedArgs[i] === this.commands[cmd].name){
                             commandIndex.push(i)
                         }
