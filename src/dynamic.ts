@@ -30,25 +30,18 @@ export class Dynamic extends Command {
 
     public async run(args: string[]): Promise<Command> {
             try {
-                let parsedArgs = args.slice(2);
-                let commandArrays = [];
-                let commandIndex = [];
-                for(let i=0;i<parsedArgs.length;i++){
-                    for(let cmd in this.commands){
-                        if(parsedArgs[i] === this.commands[cmd].name){
-                            commandIndex.push(i)
-                        }
-                    }
-                }
-                for(let i=0;i<commandIndex.length;i++){
-                    if(commandIndex.length-1==i){
-                        commandArrays[i] = parsedArgs.slice(commandIndex[i])
-                    }else{
-                        commandArrays[i] = parsedArgs.slice(commandIndex[i],commandIndex[i+1])
-                    }
-                }
-                for(let i=0;i<commandArrays.length;i++){
-                    await super.run(commandArrays[i]);
+                args = args.slice(2);
+
+                while(args.length>0){
+                    let command = this.getCommand(args);
+                    let params = command.parseOptions(args);
+                    let paramCount = Object.entries(params).length;
+                    let lastCmdIndex = args.indexOf(command.name);
+                    let fullCmdIndex = lastCmdIndex+((paramCount*2)+1-(args.indexOf('-rw')==6?1:0));
+                    let argsRun = args.slice(0,fullCmdIndex);
+
+                    args = args.slice(fullCmdIndex);
+                    await super.run(argsRun);
                 }
                 c.readline.close();
             } catch (e) {
@@ -61,5 +54,6 @@ export class Dynamic extends Command {
     protected async onRun(args: string[]): Promise<Command> {
         return this;
     }
+
 
 }
