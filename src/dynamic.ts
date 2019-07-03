@@ -35,9 +35,13 @@ export class Dynamic extends Command {
                 while(args.length>0){
                     let command = this.getCommand(args);
                     let params = command.parseOptions(args);
-                    let paramCount = Object.entries(params).length;
+                    let paramCount = (Object.entries(params).length) + (Object.values(params).length);
+                    if(args.length%2==1){
+                        console.error(`\n${Color.FgRed}Error${Color.Reset}`, 'Options formatting');
+                        break;
+                    }
                     let lastCmdIndex = args.indexOf(command.name);
-                    let fullCmdIndex = lastCmdIndex+((paramCount*2)+1-(args.indexOf('-rw')==6?1:0));
+                    let fullCmdIndex = lastCmdIndex + paramCount + 1;
                     let argsRun = args.slice(0,fullCmdIndex);
 
                     args = args.slice(fullCmdIndex);
