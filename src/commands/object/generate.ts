@@ -53,12 +53,18 @@ function generate(params:GenerateOptions, session: graphene.Session){
             console.log('Invalid algorithm');
             return;
         }
-        var key = gen[alg][curve](session, alg.toUpperCase()+'-'+curve, params.token);
+        let name =  alg.toUpperCase()+'-'+curve;
+        let key = gen[alg][curve](session, name, params.token);
 
         if (!(key instanceof graphene.SecretKey)) {
             key.privateKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
             key.publicKey.setAttribute({id:Buffer.from(key.privateKey.handle)});
-            let pubKey = key.publicKey.getAttribute('pointEC').toString('hex').slice(6);
+
+            //DER/BER encoded public key
+            let rawKey = key.publicKey.getAttribute('pointEC').toString('hex');
+
+            //Removed prefix
+            let pubKey = rawKey.slice(6);
             let objHandle = key.privateKey.handle.toString('hex');
             console.log('Outputting signature and handle: \n');
             console.log(pubKey+objHandle);
