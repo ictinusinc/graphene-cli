@@ -45,6 +45,11 @@ export class Dynamic extends Command {
                         specialCmds.push(parsedArgs[i]);
                     }
                 }
+                for(let cmd of specialCmds){
+                    if(cmd.toLowerCase()=='-quiet'){
+                        this.sharedParams.quiet = true;
+                    }
+                }
                 for(let i=0;i<commandIndex.length;i++){
                     if(commandIndex.length-1==i){
                         let lastCommand = parsedArgs.slice(commandIndex[i]);
