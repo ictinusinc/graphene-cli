@@ -19,6 +19,8 @@ export class Dynamic extends Command {
     constructor() {
         super();
 
+        this.sharedParams.dynamic = true;
+
         this.commands.push(new TestCommand(this));
         this.commands.push(new CloseCommand(this));
         this.commands.push(new VersionCommand(this));
@@ -30,7 +32,7 @@ export class Dynamic extends Command {
 
     public async run(args: string[]): Promise<Command> {
             try {
-                args = args.slice(2);
+                args = args.slice(2); //Reset to old pointer
 
                 while(args.length>0){
                     let command = this.getCommand(args);

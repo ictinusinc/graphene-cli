@@ -25,7 +25,8 @@ export class DeleteCommand extends Command {
     protected async onRun(params: DeleteOptions,): Promise<Command> {
         const session = get_session();
         if(params.oid === undefined) {
-            if(this.parent!.parent instanceof Dynamic){
+
+            if(this.sharedParams.dynamic){
                 session.destroy();
             }else{
                 const answer = (await readline.question("Do you really want to remove ALL objects (Y/N)? ")).toLowerCase();
@@ -41,7 +42,7 @@ export class DeleteCommand extends Command {
             if (!objects) {
                 throw new Error(`Object by ID '${params.oid}' is not found`);
             }
-            if(this.parent!.parent instanceof Dynamic){
+            if(this.sharedParams.dynamic){
                 for(let i=0;i<objects.length;i++){
                     session.destroy(objects.items(i)!);
                 }
@@ -54,8 +55,8 @@ export class DeleteCommand extends Command {
                         var object = objects.items(i).toType<graphene.Storage>()
                         print_object_info(object);
                         session.destroy(objects.items(i)!);
+                        console.log('Object(s) deleted.');
                     }
-                    console.log('Object(s) deleted.');
                 }
             }
         }
