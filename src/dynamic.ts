@@ -51,13 +51,8 @@ export class Dynamic extends Command {
                     }
                 }
                 for(let i=0;i<commandIndex.length;i++){
-                    if(commandIndex.length-1==i){
-                        let lastCommand = parsedArgs.slice(commandIndex[i]);
-                        await super.run(lastCommand);
-                    }else{
                         let nextCommand = parsedArgs.slice(commandIndex[i],commandIndex[i+1]);
                         await super.run(nextCommand);
-                    }
                 }
                 c.readline.close();
             } catch (e) {
