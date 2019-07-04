@@ -6,7 +6,6 @@ import { get_session } from "../slot/helper";
 import { ObjectIdOption } from "./options/obj_id";
 import {print_caption} from "../../helper";
 import {print_object_info} from "./helper";
-import {Dynamic} from "../../dynamic";
 
 interface DeleteOptions {
     oid?: string;
@@ -54,7 +53,7 @@ export class DeleteCommand extends Command {
             for(var i=0;i<objects.length;i++){
                 var object = objects.items(i).toType<graphene.Storage>()
                 print_object_info(object);
-                session.destroy(objects.items(i)!);
+                session.destroy(object!);
                 console.log('Object(s) deleted.');
             }
 
