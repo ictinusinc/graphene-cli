@@ -49,12 +49,18 @@ export class DeleteCommand extends Command {
                 }
             }
             // Print info about object
-            print_caption(`Object info`);
+            if(!this.sharedParams.quiet) {
+                print_caption(`Object info`);
+            }
             for(var i=0;i<objects.length;i++){
-                var object = objects.items(i).toType<graphene.Storage>()
-                print_object_info(object);
+                var object = objects.items(i).toType<graphene.Storage>();
+                if(!this.sharedParams.quiet) {
+                    print_object_info(object);
+                }
                 session.destroy(object!);
-                console.log('Object(s) deleted.');
+                if(!this.sharedParams.quiet) {
+                    console.log('Object(s) deleted.');
+                }
             }
 
         }

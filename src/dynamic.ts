@@ -36,10 +36,8 @@ export class Dynamic extends Command {
                 let commandIndex = [];
                 let specialCmds = [];
                 for(let i=0;i<parsedArgs.length;i++){
-                    for(let cmd in this.commands){
-                        if(parsedArgs[i] === this.commands[cmd].name){
-                            commandIndex.push(i)
-                        }
+                    if(this.hasCommand(parsedArgs[i])){
+                        commandIndex.push(i);
                     }
                     if(commandIndex.length==0){
                         specialCmds.push(parsedArgs[i]);
@@ -65,6 +63,5 @@ export class Dynamic extends Command {
     protected async onRun(args: string[]): Promise<Command> {
         return this;
     }
-
 
 }
