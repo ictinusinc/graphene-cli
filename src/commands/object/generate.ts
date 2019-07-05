@@ -44,13 +44,13 @@ export class GenerateCommand extends Command{
 function generate(params:GenerateOptions, session: graphene.Session, command: GenerateCommand){
     var splitIndex = params.alg.indexOf('-');
     if(splitIndex===-1){
-        console.log('Incorrect algorithm format.');
+        console.error('Incorrect algorithm format.');
         return;
     }else{
         let alg = params.alg.slice(0,splitIndex);
         let curve = params.alg.slice(splitIndex+1);
         if(!gen[alg][curve]){
-            console.log('Invalid algorithm');
+            console.error('Invalid algorithm');
             return;
         }
         let name =  alg.toUpperCase()+'-'+curve;

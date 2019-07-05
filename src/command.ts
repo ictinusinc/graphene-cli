@@ -35,12 +35,20 @@ export abstract class Command {
         const commandName = args[0];
         for (const command of this.commands) {
             if (command.name === commandName) {
+        //const command = this.hasCommand(commandName)
+        //if(this.hasCommand(commandName)){
                 return command.getCommand(args.slice(1));
             }
         }
         return this;
     }
-
+    public hasCommand(name: string){
+        for(let cmd in this.commands){
+            if(name == this.commands[cmd].name){
+                return cmd;
+            }
+        }
+    }
     public async run(args: string[]): Promise<Command> {
         // console.log(`${this.name}:`, args);
         const command = this.getCommand(args);
