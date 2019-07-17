@@ -11,7 +11,7 @@ import { CloseCommand } from "./commands/close";
 
 import * as c from "./const";
 
-export class Dynamic extends Command {
+export class NonInteractive extends Command {
 
     public name = "graphene";
     public description = "The graphene-cli is a cross-platform command line tool for working with PKCS#11 devices";
@@ -19,7 +19,7 @@ export class Dynamic extends Command {
     constructor() {
         super();
 
-        this.sharedParams.dynamic = true;
+        this.sharedParams.nonInteractive = true;
 
         this.commands.push(new TestCommand(this));
         this.commands.push(new CloseCommand(this));
@@ -33,23 +33,23 @@ export class Dynamic extends Command {
     public async run(args: string[]): Promise<Command> {
             try {
                 let parsedArgs = args.slice(2);
-                let commandIndex = [];
-                let specialCmds = [];
+                let commandIndexes = [];
+                let applicationFlags = [];
                 for(let i=0;i<parsedArgs.length;i++){
                     if(this.hasCommand(parsedArgs[i])){
-                        commandIndex.push(i);
+                        commandIndexes.push(i);
                     }
-                    if(commandIndex.length==0){
-                        specialCmds.push(parsedArgs[i]);
+                    if(commandIndexes.length==0){
+                        applicationFlags.push(parsedArgs[i]);
                     }
                 }
-                for(let cmd of specialCmds){
+                for(let cmd of applicationFlags){
                     if(cmd.toLowerCase()=='-quiet'){
                         this.sharedParams.quiet = true;
                     }
                 }
-                for(let i=0;i<commandIndex.length;i++){
-                        let nextCommand = parsedArgs.slice(commandIndex[i],commandIndex[i+1]);
+                for(let i=0;i<commandIndexes.length;i++){
+                        let nextCommand = parsedArgs.slice(commandIndexes[i],commandIndexes[i+1]);
                         await super.run(nextCommand);
                 }
                 c.readline.close();
