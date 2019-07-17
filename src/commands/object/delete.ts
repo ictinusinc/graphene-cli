@@ -25,7 +25,7 @@ export class DeleteCommand extends Command {
         const session = get_session();
         if(params.oid === undefined) {
 
-            if(!this.sharedParams.dynamic){
+            if(!this.sharedParams.nonInteractive){
                 const answer = (await readline.question("Do you really want to remove ALL objects (Y/N)? ")).toLowerCase();
                 if (answer && (answer !== "yes" && answer !== "y")) {
                     return this;
@@ -42,7 +42,7 @@ export class DeleteCommand extends Command {
             if (!objects) {
                 throw new Error(`Object by ID '${params.oid}' is not found`);
             }
-            if(!this.sharedParams.dynamic){
+            if(!this.sharedParams.nonInteractive){
                 const answer = (await readline.question("Do you really want to remove this object (Y/N)? ")).toLowerCase();
                 if (answer && (answer !== "yes" && answer !== "y")) {
                     return this;
